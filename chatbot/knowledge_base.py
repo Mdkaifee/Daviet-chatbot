@@ -18,7 +18,7 @@ knowledge = {
     "admission": "Admissions at DAVIET are merit-based, following government and university norms. Detailed admission guidelines, dates, and application forms are available on the Admissions page.",
     "placement": "The Training & Placement Cell at DAVIET provides internship and placement opportunities with top recruiters, ensuring a high placement rate every year.",
     "recruiters": "Major recruiters at DAVIET include Infosys, TCS, Wipro, Capgemini, IBM, Tech Mahindra, Cognizant, and many more.",
-    "hostel": "DAVIET offers separate, well-equipped hostels for boys and girls with security, Wi-Fi, mess, medical facilities, and recreational areas.",
+    "hostel": "DAVIET offers separate, well-equipped hostels for boys and girls with security, Wi-Fi, mess, medical facilities, and recreational areas inside the college.",
     "hostel facilities": "Hostel residents enjoy furnished rooms, study halls, indoor games, laundry, and regular cultural and sports activities.",
     "faculty": "The faculty at DAVIET comprises experienced and highly qualified professors, assistant professors, and lecturers dedicated to academic and personal growth.",
     "departments": "DAVIET includes departments such as Computer Science & Engineering, Information Technology, Electronics & Communication Engineering, Electrical Engineering, Mechanical Engineering, Civil Engineering, Applied Sciences, Management, and Computer Applications.",
@@ -87,11 +87,19 @@ knowledge = {
     "about daviet": "DAV Institute of Engineering & Technology (DAVIET), Jalandhar, is a premier technical institute established in 2001. It is affiliated to IKG Punjab Technical University and offers high-quality education in engineering, technology, and management. DAVIET is known for excellent infrastructure, top placements, and a vibrant campus life.",
     "about college": "DAV Institute of Engineering & Technology (DAVIET), Jalandhar, is a premier technical institute established in 2001 and managed by DAV College Managing Committee. It is affiliated to IKG Punjab Technical University and is known for quality technical education and vibrant campus life.",
     "thank you": "You're welcome! If you have more questions about DAVIET, feel free to ask.",
+    "thankyou": "You're welcome! If you have more questions about DAVIET, feel free to ask.",
     "thanks": "You're welcome! 😊 Let me know if you need anything else.",
     "ok": "Alright! If you need more information, just ask.",
     "okay": "Okay! If you have any more questions, I'm here to help.",
     "bye": "Goodbye! Have a great day.",
     "goodbye": "Goodbye! Feel free to come back with more questions.",
+    "student strength": "DAVIET has approximately 2,500 students enrolled across all undergraduate, postgraduate, and doctoral programs.",
+    "number of students": "DAVIET has approximately 2,500 students enrolled across all undergraduate, postgraduate, and doctoral programs.",
+    "how many students": "DAVIET has approximately 2,500 students enrolled across all undergraduate, postgraduate, and doctoral programs.",
+    "students in college": "DAVIET has approximately 2,500 students enrolled across all undergraduate, postgraduate, and doctoral programs.",
+    "strength of college": "DAVIET has approximately 2,500 students enrolled across all undergraduate, postgraduate, and doctoral programs.",
+    "welcome": "You're welcome! If you have more questions about DAVIET, feel free to ask.",
+
 
     # Engineering Programmes and Intakes
     "courses": (
@@ -184,7 +192,25 @@ knowledge = {
 def find_answer(query):
     query = query.lower().strip()
 
-    # Normalize common query variants to canonical keys
+    # Priority phrases that should return only their specific answer immediately
+    priority_phrases = {
+        "thank you": "You're welcome! If you have more questions about DAVIET, feel free to ask.",
+        "thanks": "You're welcome! 😊 Let me know if you need anything else.",
+        "thankyou": "You're welcome! If you have more questions about DAVIET, feel free to ask.",
+        # "welcome": "You're welcome! If you have more questions about DAVIET, feel free to ask.",
+    }
+
+    for phrase, response in priority_phrases.items():
+        if phrase in query:
+            return response
+
+    outside_scope_keywords = ['niit', 'other college', 'some other college', 'another college', 'non daviet']
+    if any(keyword in query for keyword in outside_scope_keywords):
+        return (
+            "I am designed to answer questions specifically about DAVIET College only. "
+            "For queries about other colleges like NIIT, please refer to their official resources."
+        )
+
     normalization_map = {
         "ug": "ug courses",
         "ug course": "ug courses",
@@ -197,16 +223,42 @@ def find_answer(query):
         "btech course": "btech courses",
         "btech courses": "btech courses",
         "courses": "courses",
-        # add more if needed
+        "student strength": "student strength",
+        "number of students": "student strength",
+        "how many students": "student strength",
+        "students in college": "student strength",
     }
 
-    # Check if entire query matches normalization map keys
+    branch_keywords = ['electronics', 'communication', 'computer science', 'electrical', 'mechanical', 'civil', 
+                       'ai', 'ml', 'bca', 'bba', 'bhmct', 'mtech', 'mba', 'mca', 'phd']
+
+    # Prioritize student count queries by containment check
+    student_queries = ["student strength", "strength of college","number of students", "how many students", "students in college"]
+    if any(phrase in query for phrase in student_queries):
+        return f"• {knowledge.get('student strength', 'DAVIET has approximately 2,500 students enrolled across all programs.')}"
+
+    # First check if query exactly matches normalized keys
     if query in normalization_map:
         normalized_query = normalization_map[query]
         if normalized_query in knowledge:
             return f"• {knowledge[normalized_query]}"
 
-    # If no exact normalization, fallback to old matching logic
+    # If query contains branch keyword but no exact match in normalization_map or knowledge,
+    # fallback to polite unknown answer
+    if any(branch in query for branch in branch_keywords):
+        # Check if knowledge contains any key matching the query or normalization
+        for key in normalization_map.values():
+            if key in knowledge and key in query:
+                return f"• {knowledge[key]}"
+        # If no match found, fallback
+        return (
+            "I'm sorry, I couldn't find an answer to your question.\n"
+            "Try asking about DAVIET's courses, fees, hostel, canteen, sports, or events.\n"
+            "You can also visit the official website (https://davietjal.org/) or contact the college office for more information.\n"
+            "If you want to try another question, I'm here to help!"
+        )
+
+    # Fallback old matching logic
     matches = []
     for word in query.split():
         for key in knowledge:
@@ -227,3 +279,10 @@ def find_answer(query):
         "You can also visit the official website (https://davietjal.org/) or contact the college office for more information.\n"
         "If you want to try another question, I'm here to help!"
     )
+
+
+def get_all_keys():
+    """
+    Returns a list of all keys in the knowledge base.
+    """
+    return list(knowledge.keys())
