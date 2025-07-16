@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DAVIET Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f5ff 0%, #f7e9ff 100%);
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-app-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+         .chatbox-outer {
+        width: 430px;
+        max-width: 98vw;
+        height: 80vh;
+        max-height: 98vh;
+        background: #fff;
+        border: 2.5px solid #754ffe;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px #754ffe22;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    .chat-header {
+        font-size: 2em;
+        color: #754ffe;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        background: #fff;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        padding: 20px 0 16px 30px;
+        position: sticky;
+        /* sticky in scrollable area */
+        /* width: 100%; */
+        border-radius: 20px 20px 0 0;
+    }
+        #chatbox {
+        flex: 1;
+        padding: 12px 20px 18px 20px;
+        overflow-y: auto;
+        font-size: 1.07em;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        /* Now the chat scrolls under the header */
+    }
+        .bot-bubble, .user-bubble {
+            display: inline-block;
+            padding: 11px 16px;
+            border-radius: 16px;
+            max-width: 85%;
+            margin-bottom: 3px;
+            word-break: break-word;
+            font-size: 1.07em;
+            line-height: 1.44;
+        }
+        .bot-bubble {
+            background: #f2efff;
+            color: #6637d8;
+            align-self: flex-start;
+            box-shadow: 0 1px 5px #754ffe10;
+        }
+        .user-bubble {
+            background: linear-gradient(95deg, #8866fa 60%, #754ffe 100%);
+            color: #fff;
+            align-self: flex-end;
+            box-shadow: 0 1px 5px #754ffe22;
+        }
+        .bot-welcome {
+            text-align: center;
+            color: #754ffe;
+            font-size: 1.14em;
+            margin-top: 26px;
+            font-weight: 500;
+        }
+        .bot-emoji {
+            font-size: 2.5em;
+            display: block;
+            margin-bottom: 12px;
+            margin-top: 8px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 0 20px 20px 20px;
+            background: none;
+        }
+        #userInput {
+            flex: 1;
+            border: 1.5px solid #ccc;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 1.07em;
+            outline: none;
+            transition: border 0.2s;
+        }
+        #userInput:focus {
+            border: 2px solid #754ffe;
+        }
+        #sendBtn {
+            background: #754ffe;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-size: 1.07em;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 3px #754ffe23;
+        }
+        #sendBtn:disabled {
+            background: #cabffd;
+            cursor: not-allowed;
+            color: #fff;
+        }
+        @media (max-width: 900px) {
+            .chatbox-outer { width: 99vw; height: 99vh; max-width: 99vw; max-height: 99vh; border-radius: 0; }
+            .chat-header { padding-left: 12vw; font-size: 1.5em;}
+        }
+        @media (max-width: 540px) {
+            .chatbox-outer { width: 100vw; height: 100vh; border-radius: 0;}
+            .chat-header { font-size: 1.1em; padding-left: 12vw;}
+            #chatbox { padding: 54px 4vw 10vw 4vw; font-size: 1em;}
+            .input-row { padding: 0 4vw 4vw 4vw;}
+        }
+        .footer {
+            width: 100vw;
+            background: #faf7ff;
+            color: #754ffe;
+            text-align: center;
+            font-size: 1em;
+            padding: 18px 0 16px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            letter-spacing: 0.1em;
+            font-family: inherit;
+            z-index: 100;
+            box-shadow: 0 -2px 12px #754ffe12;
+        }
+        @media (max-width: 540px) {
+            .footer {
+                font-size: 0.97em;
+                padding: 13px 0 12px 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="chat-app-container">
+        <div class="chatbox-outer">
+            <div class="chat-header">DAVIET College Chatbot</div>
+            <div id="chatbox">
+                <div class="bot-emoji">🤖</div>
+                <div class="bot-welcome">
+                    Welcome to DAVIET Chatbot!<br>
+                    <span style="font-size:0.99em;">
+                        Ask me anything about <b>DAVIET College</b>, courses, fees, hostels, events, and more.<br>
+                        <i>Type your question below to get started.</i>
+                    </span>
+                </div>
+            </div>
+            <div class="input-row">
+                <input type="text" id="userInput" placeholder="Type your question here" autocomplete="off" />
+                <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let chatStarted = false;
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById("userInput");
+            const sendBtn = document.getElementById("sendBtn");
+            const message = input.value.trim();
+            if (!message) return;
+
+            if (!chatStarted) {
+                document.getElementById("chatbox").innerHTML = "";
+                chatStarted = true;
+            }
+            document.getElementById("chatbox").innerHTML += `<div class="user-bubble">${escapeHtml(message)}</div>`;
+
+            sendBtn.disabled = true;
+            fetch("http://127.0.0.1:5000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("chatbox").innerHTML += `<div class="bot-bubble">${escapeHtml(data.response)}</div>`;
+                input.value = "";
+                document.getElementById("chatbox").scrollTop = document.getElementById("chatbox").scrollHeight;
+                sendBtn.disabled = false;
+                input.focus();
+            })
+            .catch(error => {
+                document.getElementById("chatbox").innerHTML += `<div class="bot-bubble">Bot: Error connecting to server.</div>`;
+                sendBtn.disabled = false;
+            });
+        }
+
+        // Enable/disable send button on input
+        document.getElementById("userInput").addEventListener("input", function(e) {
+            document.getElementById("sendBtn").disabled = !e.target.value.trim();
+        });
+
+        // Allow Enter key to send messages
+        document.getElementById("userInput").addEventListener("keypress", function(e) {
+            if (e.key === "Enter" && !document.getElementById("sendBtn").disabled) {
+                sendMessage();
+            }
+        });
+    </script>
+    <footer class="footer">
+    All rights reserved © 2025 &nbsp;|&nbsp; Developed by Md Kaifee
+</footer>
+
+</body>
+</html>
