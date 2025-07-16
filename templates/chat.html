@@ -93,14 +93,14 @@
             text-align: center;
             color: #754ffe;
             font-size: 1.14em;
-            margin-top: 26px;
+            margin-top: 16px;
             font-weight: 500;
         }
         .bot-emoji {
             font-size: 2.5em;
             display: block;
-            margin-bottom: 12px;
             margin-top: 8px;
+            text-align: center;
         }
         .input-row {
             display: flex;
@@ -169,13 +169,48 @@
                 padding: 13px 0 12px 0;
             }
         }
+            .chat-tagline {
+    color: #8866fa;
+    font-size: 1.09em;
+    font-weight: 500;
+    margin-left: 0;
+    margin-bottom: 4px;
+    margin-top: 10px;
+    letter-spacing: 0.02em;
+    text-align: center;
+}
+@media (max-width: 540px) {
+    .chat-tagline {
+        font-size: 1em;
+        margin-left: 0;
+    }
+}
+.chat-header-divider {
+    border: none;
+    border-top: 2px solid #8866fa;
+    margin: 0 30px 8px 30px;
+    opacity: 0.18;
+}
+@media (max-width: 540px) {
+    .chat-header-divider {
+        margin: 0 12vw 8px 12vw;
+    }
+}
+
+
 
     </style>
 </head>
 <body>
     <div class="chat-app-container">
         <div class="chatbox-outer">
-            <div class="chat-header">DAVIET College Chatbot</div>
+  <div class="chat-header">DAVIET College Chatbot</div>
+  <hr class="chat-header-divider">
+<div class="chat-tagline">
+    Your virtual assistant for all things DAVIET – Ask about courses, admissions, campus life & more!
+</div>
+<hr class="chat-header-divider">
+
             <div id="chatbox">
                 <div class="bot-emoji">🤖</div>
                 <div class="bot-welcome">
@@ -213,7 +248,7 @@
             document.getElementById("chatbox").innerHTML += `<div class="user-bubble">${escapeHtml(message)}</div>`;
 
             sendBtn.disabled = true;
-            fetch("http://127.0.0.1:5000/chat", {
+            fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: message })
