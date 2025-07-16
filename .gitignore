@@ -1,0 +1,49 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+.Python
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Flask instance/config
+instance/
+*.db
+*.sqlite3
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Test/output
+coverage/
+htmlcov/
+*.log
+
+# Jupyter
+.ipynb_checkpoints
+
+# Node (if using any npm for frontend)
+node_modules/
+npm-debug.log
+
+# Local settings
+.env
+.env.*
+
+# Pytest cache
+.pytest_cache/
+
+# Backup files
+*~
