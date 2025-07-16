@@ -117,6 +117,19 @@ knowledge = {
     "• Mechanical Engineering – 60 (Direct), 6 (Lateral Entry)\n"
     "• Civil Engineering – 60 (Direct), 6 (Lateral Entry)"
 ),
+"ug courses": (
+    "DAVIET offers the following undergraduate courses:\n"
+    "• Electronics & Communication Engineering – 60 (Direct), 6 (Lateral Entry)\n"
+    "• Computer Science & Engineering – 180 (Direct), 12 (Lateral Entry)\n"
+    "• Electrical Engineering – 60 (Direct), 6 (Lateral Entry)\n"
+    "• Computer Science & Engineering (AI & ML) – 180 (Direct), 6 (Lateral Entry)\n"
+    "• Mechanical Engineering – 60 (Direct), 6 (Lateral Entry)\n"
+    "• Civil Engineering – 60 (Direct), 6 (Lateral Entry)\n"
+    "• Bachelor of Computer Applications (BCA) – 60 seats (Direct)\n"
+    "• Bachelor of Hotel Management & Catering Technology (BHMCT) – 60 seats (Direct)\n"
+    "• Bachelor of Business Administration (BBA) – 60 seats (Direct)"
+),
+
     "btech courses": (
         "B.Tech Programs at DAVIET:\n"
         "1. Electronics & Communication Engineering (60 Direct, 6 Lateral)\n"
@@ -170,24 +183,47 @@ knowledge = {
 
 def find_answer(query):
     query = query.lower().strip()
+
+    # Normalize common query variants to canonical keys
+    normalization_map = {
+        "ug": "ug courses",
+        "ug course": "ug courses",
+        "ug courses": "ug courses",
+        "undergraduate course": "ug courses",
+        "undergraduate courses": "ug courses",
+        "undergrad course": "ug courses",
+        "undergrad courses": "ug courses",
+        "btech": "btech courses",
+        "btech course": "btech courses",
+        "btech courses": "btech courses",
+        "courses": "courses",
+        # add more if needed
+    }
+
+    # Check if entire query matches normalization map keys
+    if query in normalization_map:
+        normalized_query = normalization_map[query]
+        if normalized_query in knowledge:
+            return f"• {knowledge[normalized_query]}"
+
+    # If no exact normalization, fallback to old matching logic
     matches = []
-    # List of knowledge keys present in the query, in order of appearance
     for word in query.split():
         for key in knowledge:
             if key in word and knowledge[key] not in matches:
                 matches.append(knowledge[key])
-    # Fallback if nothing found in word-by-word loop
+
     if not matches:
-        # Standard full match as backup
         for key in knowledge:
             if key in query and knowledge[key] not in matches:
                 matches.append(knowledge[key])
+
     if matches:
         return "\n\n".join(f"• {a}" for a in matches)
+
     return (
         "I'm sorry, I couldn't find an answer to your question.\n"
         "Try asking about DAVIET's courses, fees, hostel, canteen, sports, or events.\n"
         "You can also visit the official website (https://davietjal.org/) or contact the college office for more information.\n"
         "If you want to try another question, I'm here to help!"
     )
-
